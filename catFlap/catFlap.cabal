@@ -15,11 +15,12 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Api
+  exposed-modules:     Api, Repo
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , Spock
                      , text
+                     , directory
   default-language:    Haskell2010
 
 executable catFlap-exe
