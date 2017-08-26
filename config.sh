@@ -1,11 +1,25 @@
 #!/bin/bash
 
-RAW_SCAN_DIR=raw_scans
+# Scan stage
+# -> RAW_SCAN_DIR
 SCAN_RESOLUTION=200
-OCR_DIR=ocr_scans
+RAW_SCAN_DIR=raw_scans
 RAW_SCAN_EXT=.out
 SCAN_EXT=.pnm
+
+# Ocr stage
+# RAW_SCAN_DIR -> OCR_DIR
+OCR_DIR=ocr_scans
 OCR_EXT=.txt
+
+# Categorisation stage
+# Works in OCR_DIR
 KEYWORD_FILE=keywords
+CAT_EXT=.cat
+
+# Store stage
+# OCR_DIR -> DOCUMENTDIR
+DOCUMENT_DIR=documents
 CATEGORY_DIR=categories
+RELATIVE_DOC_PATH="../$DOCUMENT_DIR" # Relative path from base categories dir to document
 
