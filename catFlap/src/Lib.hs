@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Lib
@@ -6,8 +7,6 @@ module Lib
     , ApiAction
     ) where
 
-import Objects (Category (..))
-
 import Web.Spock
 import Web.Spock.Config
 
@@ -15,6 +14,11 @@ import Data.Aeson       hiding (json)
 import Data.Monoid      ((<>))
 import Data.Text        (Text, pack)
 import GHC.Generics
+
+data Category = Category { name :: Text }
+                deriving (Generic, Show)
+instance ToJSON Category
+instance FromJSON Category
 
 type Api = SpockM () () () ()
 type ApiAction a = SpockAction () () () a
