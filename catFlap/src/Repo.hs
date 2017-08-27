@@ -15,8 +15,8 @@ import System.Directory (listDirectory)
 type Category = Text
 type DocumentID = Text
 
-keywordsFile = "../../keywords"
-documentPath = "../../documents"
+keywordsFile = "../keywords"
+documentPath = "../documents"
 
 categories :: IO [Category]
 categories = lines <$> readFile keywordsFile
