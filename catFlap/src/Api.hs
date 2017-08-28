@@ -24,7 +24,7 @@ data Category = Category { name :: Text }
 instance ToJSON Category
 instance FromJSON Category
 
-data Document = Document { id :: Text }
+data Document = Document { id :: Repo.DocumentID }
                 deriving (Generic, Show)
 instance ToJSON Document
 instance FromJSON Document
