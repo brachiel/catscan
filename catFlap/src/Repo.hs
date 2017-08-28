@@ -19,9 +19,10 @@ import Config
 type Category = Text
 type DocumentID = Text
 
-configFile = "../config.sh"
-keywordsFile = "../keywords"
-documentPath = "../documents"
+scanCatBasePath = "../"
+configFile = scanCatBasePath ++ "config.sh" :: FilePath
+keywordsFile = (++) scanCatBasePath <$> config # "KEYWORD_FILE" :: IO FilePath
+documentPath = (++) scanCatBasePath <$> config # "DOCUMENT_DIR" :: IO FilePath
 
 config :: IO Config
 config = do
@@ -32,8 +33,14 @@ config = do
 
 
 categories :: IO [Category]
-categories = lines <$> readFile keywordsFile
+categories = do
+    f <- keywordsFile
+    t <- readFile f
+    return $ lines t
 
 documents :: IO [DocumentID]
-documents = fmap pack <$> listDirectory documentPath
+documents = do
+    p <- documentPath
+    fs <- listDirectory p
+    return $ map pack fs
 

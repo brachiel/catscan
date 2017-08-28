@@ -4,6 +4,7 @@ module Config
     , parseConfig
     , parseConfigLines
     , configLine
+    , (#)
     ) where
 
 -- Based on http://vaibhavsagar.com/blog/2017/08/13/i-haskell-a-git/
@@ -12,7 +13,7 @@ module Config
 import Prelude hiding (takeWhile, lines, readFile)
 import Data.Attoparsec.Text
 import Data.Char (isAlpha, isSpace)
-import Data.Text (Text, pack, lines)
+import Data.Text (Text, pack, unpack, lines)
 import Data.Text.IO (readFile)
 import Data.Maybe (catMaybes)
 import qualified Data.Map.Strict as Map
@@ -22,6 +23,12 @@ import Control.Monad (sequence)
 -- TODO: Parse comments and empty lines, too
 
 type Config = Map.Map Text Text
+
+-- |Read key from (IO Config)
+(#) :: IO Config -> String -> IO String
+config # key = do
+    cfg <- config
+    return $ unpack $ cfg Map.! (pack key)
 
 identifier :: Parser Text
 identifier = do
