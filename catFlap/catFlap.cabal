@@ -15,12 +15,14 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Api, Repo
+  exposed-modules:     Api, Repo, Config
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , Spock
                      , text
                      , directory
+                     , attoparsec
+                     , containers
   default-language:    Haskell2010
 
 executable catFlap-exe
@@ -37,7 +39,11 @@ test-suite catFlap-test
   hs-source-dirs:      test
   main-is:             Spec.hs
   build-depends:       base
-                     , catFlap
+                     , catFlap 
+                     , QuickCheck
+                     , quickcheck-instances
+                     , attoparsec
+                     , text
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 

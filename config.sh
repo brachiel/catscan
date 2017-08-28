@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# THIS IS NOT A PURE BASH FILE
+# Use only a subset of bash compatible lines here
+# Allowed are comments and settings of varaibles of the form
+# <KEY>=<VALUE> # where VALUE is without space
+# or
+# <KEY>="<VALUE>" # where VALUE is without "
+
 # Scan stage
 # -> RAW_SCAN_DIR
 SCAN_RESOLUTION=200
