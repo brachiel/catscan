@@ -37,6 +37,10 @@ type ApiAction a = SpockAction () () () a
 app :: Api
 app = do
     get root $ file "text/html" "static/index.html"
+    get ("static/js" <//> var) $ \f -> file "text/javascript" $ "static/js/" ++ f
+    get ("static/css/images/icons-svg" <//> var) $ \f -> file "image/svg" $ "static/css/images/icons-svg/" ++ f
+    get ("static/css/images/icons-png" <//> var) $ \f -> file "image/png" $ "static/css/images/icons-png/" ++ f
+    get ("static/css" <//> var) $ \f -> file "text/css" $ "static/css/" ++ f
     get "categories" $ do
         cs <- liftIO $ (map fromRepoCategory <$> Repo.categories :: IO [Category]) -- LiftIO lifts IO to ActionT; which can be used with spock
         json cs
