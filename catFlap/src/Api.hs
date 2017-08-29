@@ -38,6 +38,7 @@ app :: Api
 app = do
     get root $ file "text/html" "static/index.html"
     get ("static/js" <//> var) $ \f -> file "text/javascript" $ "static/js/" ++ f
+    get ("static/css/images" <//> var) $ \f -> file "image/png" $ "static/css/images/" ++ f
     get ("static/css/images/icons-svg" <//> var) $ \f -> file "image/svg" $ "static/css/images/icons-svg/" ++ f
     get ("static/css/images/icons-png" <//> var) $ \f -> file "image/png" $ "static/css/images/icons-png/" ++ f
     get ("static/css" <//> var) $ \f -> file "text/css" $ "static/css/" ++ f
