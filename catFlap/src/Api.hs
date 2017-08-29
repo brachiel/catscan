@@ -36,6 +36,7 @@ type ApiAction a = SpockAction () () () a
 
 app :: Api
 app = do
+    get root $ file "text/html" "static/index.html"
     get "categories" $ do
         cs <- liftIO $ (map fromRepoCategory <$> Repo.categories :: IO [Category]) -- LiftIO lifts IO to ActionT; which can be used with spock
         json cs
