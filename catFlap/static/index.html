@@ -12,13 +12,12 @@
             $(document).ready(function() {
                 $.getJSON("/documents", function(data) {
                     var documents = [];
+                    var opacity = 1.0/data.length;
                     $.each(data, function(key, val) {
                         documents.push('<img src="/document/'+val.id+'" style="opacity: '+opacity+'" />');
                     });
 
-                    var opacity = 1.0/documents.length;
                     $("#documents").html(documents.join(""));
-                    $("#documents > img").css('opacity', opacity.toString());
                 });
             });
         </script>
