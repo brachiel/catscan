@@ -8,6 +8,7 @@ module Api
     ) where
 
 import qualified Repo
+import qualified Config
 
 import Prelude                  hiding (id)
 import Web.Spock
@@ -15,7 +16,8 @@ import Web.Spock.Config
 
 import Data.Aeson               hiding (json)
 import Data.Monoid              ((<>))
-import Data.Text                (Text, pack)
+import Data.Text                (Text, pack, append)
+import Data.Text.Encoding       (encodeUtf8)
 import GHC.Generics
 import Control.Monad.IO.Class   (liftIO)
 
@@ -40,6 +42,12 @@ app = do
     get "documents" $ do
         ds <- liftIO $ (map fromRepoDocumentID <$> Repo.documents :: IO [Document])
         json ds
+    get ("document" <//> var) $ \dId -> do
+        path <- liftIO $ Repo.documentPath dId
+        ext <- liftIO Config.docExt
+        case path of
+            Just doc -> file ("image/" `append` pack ext) doc
+            Nothing  -> text "error"
 
 fromRepoCategory :: Repo.Category -> Category
 fromRepoCategory c = Category { name = c }

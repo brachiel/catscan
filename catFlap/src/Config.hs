@@ -1,10 +1,9 @@
 module Config
-    ( Config
-    , loadConfig
-    , parseConfig
-    , parseConfigLines
-    , configLine
-    , (#)
+    ( scanCatBasePath
+    , configFile
+    , keywordsFile
+    , docExt
+    , docBasePath
     ) where
 
 -- Based on http://vaibhavsagar.com/blog/2017/08/13/i-haskell-a-git/
@@ -20,9 +19,23 @@ import qualified Data.Map.Strict as Map
 import Control.Applicative ((<|>))
 import Control.Monad (sequence)
 
--- TODO: Parse comments and empty lines, too
+
+-- Config
+scanCatBasePath = "../" :: FilePath
+configFile = scanCatBasePath ++ "config.sh" :: FilePath
+keywordsFile = (++) scanCatBasePath <$> config # "KEYWORD_FILE" :: IO FilePath
+docBasePath = (++) scanCatBasePath <$> config # "DOCUMENT_DIR" :: IO FilePath
+docExt = fmap tail $ config # "SCAN_EXT" :: IO String
 
 type Config = Map.Map Text Text
+
+config :: IO Config
+config = do
+    ec <- loadConfig configFile
+    return $ case ec
+             of Left  err    -> error err
+                Right config -> config
+
 
 -- |Read key from (IO Config)
 (#) :: IO Config -> String -> IO String

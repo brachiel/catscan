@@ -1,68 +1,68 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Repo
-    ( config
-    
+    ( isDocumentID
+    , fromFilePath
+    , toDocFilePath
+
     , Category
     , categories
 
     , DocumentID
     , documents
+    , documentPath
     ) where
 
 import Prelude           hiding (lines, readFile) -- use Text instead
-import Data.Char         (isAlpha)
-import Data.Text         (Text, lines, pack)
-import Data.Text.IO      (readFile)
+
+import Data.Char         (isAlpha, isDigit)
 import Data.List         (isSuffixOf)
 import Data.List.Split   (splitOn)
+import Data.Maybe        (catMaybes)
+import Data.Text         (Text, lines, pack)
+import Data.Text.IO      (readFile)
 import System.Directory  (listDirectory)
 
-import Config
+import qualified Config
 
 type Category = Text
 type DocumentID = FilePath
 type DocumentContent = Text
 
-scanCatBasePath = "../" :: FilePath
-configFile = scanCatBasePath ++ "config.sh" :: FilePath
-keywordsFile = (++) scanCatBasePath <$> config # "KEYWORD_FILE" :: IO FilePath
-docBasePath = (++) scanCatBasePath <$> config # "DOCUMENT_DIR" :: IO FilePath
-docExt = config # "SCAN_EXT" :: IO String
-
-config :: IO Config
-config = do
-    ec <- loadConfig configFile
-    return $ case ec
-             of Left  err    -> error err
-                Right config -> config
 
 fromFilePath :: FilePath -> Maybe DocumentID
-fromFilePath p = if (all isAlpha base) then Just base
-                                       else Nothing
-                 where [base, ext] = splitOn "." p
+fromFilePath p = case splitOn "." p of
+                    [base, _] | isDocumentID base -> Just base
+                    otherwise                    -> Nothing
 
-toDocFilePath :: DocumentID -> IO FilePath
-toDocFilePath d | all isAlpha d = do
-    ext <- docExt
-    p <- docBasePath
-    return $ p ++ d ++ ext
+
+toDocFilePath :: DocumentID -> IO (Maybe FilePath)
+toDocFilePath d | isDocumentID d = do
+    ext <- Config.docExt
+    p   <- Config.docBasePath
+    return . Just $ p ++ '/' : d ++ '.' : ext
+toDocFilePath d = return Nothing
+
+
+isDocumentID :: FilePath -> Bool
+isDocumentID = and . map (\c -> isAlpha c || 
+                                isDigit c || 
+                                c `elem` ("_-()+"::[Char])
+                         )
 
 categories :: IO [Category]
 categories = do
-    f <- keywordsFile
+    f <- Config.keywordsFile
     t <- readFile f
     return $ lines t
 
 documents :: IO [DocumentID]
 documents = do
-    p <- docBasePath            :: IO FilePath
-    allFiles <- listDirectory p :: IO [FilePath]
-    ext <- docExt               :: IO String
-    return $ filter (isSuffixOf ext) allFiles
+    p        <- Config.docBasePath  :: IO FilePath
+    ext      <- Config.docExt       :: IO String
+    allFiles <- listDirectory p     :: IO [FilePath]
+    return $ catMaybes . map fromFilePath $ filter (isSuffixOf ('.':ext)) allFiles
 
-document :: DocumentID -> IO DocumentContent
-document doc = do
-    p <- toDocFilePath doc
-    readFile p
+documentPath :: DocumentID -> IO (Maybe FilePath)
+documentPath = toDocFilePath
 
