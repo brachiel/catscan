@@ -11,8 +11,8 @@
 # -> RAW_SCAN_DIR
 SCAN_RESOLUTION=200
 RAW_SCAN_DIR=raw_scans
-RAW_SCAN_EXT=.out
-SCAN_EXT=.pnm
+RAW_SCAN_EXT=.pnm
+SCAN_EXT=.png
 
 # Ocr stage
 # RAW_SCAN_DIR -> OCR_DIR
