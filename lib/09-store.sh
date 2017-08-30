@@ -7,12 +7,12 @@ for cat_file in $OCR_DIR/*$CAT_EXT; do
     document=`basename "$cat_file" $CAT_EXT`
     echo -n "Linking $document: "
 
-    for category in `cat $cat_file`; do
-        echo -n "$category "
+    while read category; do
+        echo -n "$category, "
         mkdir -p "$CATEGORY_DIR/$category"
         # ../ because we are in a subdirectory of $CATEGORY_DIR
         ln -s "../$RELATIVE_DOC_PATH/$document" "$CATEGORY_DIR/$category/$document"
-    done
+    done < $cat_file
 
     echo "done"
 done

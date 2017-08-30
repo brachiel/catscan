@@ -3,13 +3,13 @@
 source ./config.sh
 
 mkdir -p "$OCR_DIR"
-rm -f "$OCR_DIR/*$OCR_EXT" # Remove all previous OCR files
+rm -f $OCR_DIR/*$OCR_EXT # Remove all previous OCR files
 
-mv "$RAW_SCAN_DIR/*$SCAN_EXT" "$OCR_DIR"
+mv $RAW_SCAN_DIR/*$SCAN_EXT $OCR_DIR
 
 cd "$OCR_DIR"
 
-for raw_scan in "./*$SCAN_EXT"
+for raw_scan in ./*$SCAN_EXT
 do
     echo tesseract "$raw_scan" "$raw_scan" -l deu
     tesseract "$raw_scan" "$raw_scan" -l deu
