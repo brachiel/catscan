@@ -9,9 +9,8 @@ for cat_file in $OCR_DIR/*$CAT_EXT; do
 
     while read category; do
         echo -n "$category, "
-        mkdir -p "$CATEGORY_DIR/$category"
-        # ../ because we are in a subdirectory of $CATEGORY_DIR
-        ln -s "../$RELATIVE_DOC_PATH/$document" "$CATEGORY_DIR/$category/$document"
+        # we add the document to the keywords index
+        echo $document >> "$CATEGORY_DIR/$category"
     done < $cat_file
 
     echo "done"
