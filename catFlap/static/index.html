@@ -10,22 +10,84 @@
         <!--script src="static/js/jquery.mobile-1.4.5.min.js"></script-->
         <script>
             $(document).ready(function() {
-                $.getJSON("/documents", function(data) {
-                    var documents = [];
-                    var opacity = 1.0/data.length;
-                    $.each(data, function(key, val) {
-                        documents.push('<img src="/document/'+val.id+'" style="opacity: '+opacity+'" />');
+
+                function getDocumentsForCategory(category) {
+                    $("#documents").html("");
+
+                    $.getJSON("/category/"+category, function(data) {
+                        var documents = [];
+                        var numDocs = Math.min(data.length, 20);
+                        var opacity = 1.0/numDocs;
+                        $.each(data, function(key, val) {
+                            documents.push('<img src="/document/'+val.id+'" style="opacity: '+opacity+'" />');
+                            if (key >= numDocs) return false; // Exit after 20 docs
+                        });
+
+                        $("#documents").html(documents.join(""));
+                    });
+                }
+                
+                // Get categories
+                $.getJSON("/categories", function(data) {
+                    var cats = [];
+                    $.each(data, function(key, cat) {
+                        cats.push('<li><a data-category="'+cat.name+'">'+cat.name+'</a></li>');
                     });
 
-                    $("#documents").html(documents.join(""));
+                    $("#categories_list").html(cats.join(""));
+                    $("#categories a").click(function() {
+                        $(this).parent("li").siblings("li.active").removeClass("active");
+                        $(this).parent("li").addClass("active");
+
+                        getDocumentsForCategory($(this).data('category'));
+                    });
                 });
             });
         </script>
         <style>
+            #documents {
+                position: absolute;
+                top: 5%;
+                left: 5%;
+                border: 1px solid grey;
+                height: 140%;
+            }
+
             #documents > img {
                 position: absolute;
                 top: 0;
                 left: 0;
+
+                height: 100%;
+            }
+
+            #categories {
+                position: absolute;
+                height: 80%;
+                top: 40px;
+                right: 40px;
+            }
+
+            #categories a {
+                display: block;
+                padding: 2% 4%;
+                font-weight: bold;
+                font-size: 13px;
+                color: #3f3f3f;
+                text-decoration: none;
+            }
+
+            #categories li.active {
+                background: #fff;
+            }
+
+            #categories li {
+                border-bottom: 1px solid #ccc;
+                margin: 0;
+                padding: 0;
+                background: #eee;
+                line-height: 20px;
+                list-style-type: none;
             }
         </style>
     </head>
@@ -34,6 +96,9 @@
             <canvas id="canvas" />
         </div>
         <div id="documents">
+        </div>
+        <div id="categories">
+            <ul id="categories_list"></ul>
         </div>
     </body>
 </html>

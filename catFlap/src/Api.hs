@@ -45,8 +45,14 @@ app = do
     get "categories" $ do
         cs <- liftIO $ (map fromRepoCategory <$> Repo.categories :: IO [Category]) -- LiftIO lifts IO to ActionT; which can be used with spock
         json cs
+    get ("categories" <//> var) $ \docId -> do
+        cs <- liftIO $ (map fromRepoCategory <$> Repo.documentCategories docId :: IO [Category]) -- LiftIO lifts IO to ActionT; which can be used with spock
+        json cs
     get "documents" $ do
         ds <- liftIO $ (map fromRepoDocumentID <$> Repo.documents :: IO [Document])
+        json ds
+    get ("category" <//> var) $ \cat -> do
+        ds <- liftIO $ (map fromRepoDocumentID <$> Repo.categoryDocuments (Repo.Category cat) :: IO [Document]) -- LiftIO lifts IO to ActionT; which can be used with spock
         json ds
     get ("document" <//> var) $ \dId -> do
         path <- liftIO $ Repo.documentPath dId
@@ -56,7 +62,7 @@ app = do
             Nothing  -> text "error"
 
 fromRepoCategory :: Repo.Category -> Category
-fromRepoCategory c = Category { name = c }
+fromRepoCategory (Repo.Category c) = Category { name = c }
 
 fromRepoDocumentID :: Repo.DocumentID -> Document
 fromRepoDocumentID id = Document { id = id }

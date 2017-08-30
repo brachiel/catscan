@@ -1,9 +1,25 @@
+{- |
+Module      :  $Header$
+Description :  Parser of scancat config
+Copyright   :  (c) brachiel@github
+License     :  All rights reserved.
+
+Maintainer  :  brachiel@github
+Stability   :  unstable
+Portability :  portable
+
+Reads and parses the scancat configuration file and exposes the settings
+in neatly IO wrapped values. Fails miserably in case of parsing errors.
+-}
+
 module Config
     ( scanCatBasePath
     , configFile
     , keywordsFile
     , docExt
     , docBasePath
+    , catExt
+    , catBasePath
     ) where
 
 -- Based on http://vaibhavsagar.com/blog/2017/08/13/i-haskell-a-git/
@@ -21,13 +37,39 @@ import Control.Monad (sequence)
 
 
 -- Config
+
+-- |'scanCatBasePath' is the base path for all other path based options.
+-- It must point to the config.sh file of scancat.
 scanCatBasePath = "../" :: FilePath
+
+-- |'configFile' points to the config.sh configuration file of scancat.
 configFile = scanCatBasePath ++ "config.sh" :: FilePath
+
+-- |'keywordsFile' points to the keywords file of scancat containing
+-- a list of keywords that scancat knows. Its location is read from
+-- the config file and is thus wrapped in IO
 keywordsFile = (++) scanCatBasePath <$> config # "KEYWORD_FILE" :: IO FilePath
+
+-- |The 'docBasePath' points to location of the raw repository, i.e.
+-- to the location where the scanned files and their meta files are.
+-- It is read from the config file and is thus wrapped in IO
 docBasePath = (++) scanCatBasePath <$> config # "DOCUMENT_DIR" :: IO FilePath
+
+-- |The 'docExt' is the extension used for documents in 'docBasePath'.
+-- It is read from the config file and is thus wrapped in IO
 docExt = fmap tail $ config # "SCAN_EXT" :: IO String
 
-type Config = Map.Map Text Text
+-- |The 'catExt' is the extension used for the category meta files in 'docBasePath'.
+-- It is read from the config file and is thus wrapped in IO
+catExt = fmap tail $ config # "CAT_EXT" :: IO String
+
+-- |The 'catBasePath' points to location of the category map files.
+-- Each of the map files contains a list with document names.
+-- It is read from the config file and is thus wrapped in IO
+catBasePath = (++) scanCatBasePath <$> config # "CATEGORY_DIR" :: IO FilePath
+
+
+data Config = Config (Map.Map Text Text)
 
 config :: IO Config
 config = do
@@ -40,7 +82,7 @@ config = do
 -- |Read key from (IO Config)
 (#) :: IO Config -> String -> IO String
 config # key = do
-    cfg <- config
+    Config cfg <- config
     return $ unpack $ cfg Map.! (pack key)
 
 identifier :: Parser Text
@@ -93,7 +135,7 @@ parseConfigLines = fmap catMaybes . els
                         els = sequence . les                         :: Text ->  Either String [Maybe (Text, Text)] 
 
 parseConfig :: Text -> Either String Config
-parseConfig = fmap Map.fromList . parseConfigLines
+parseConfig = fmap (Config . Map.fromList) . parseConfigLines
 
 
 loadConfig :: FilePath -> IO (Either String Config)
