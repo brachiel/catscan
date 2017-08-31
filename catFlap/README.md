@@ -6,5 +6,8 @@ RESTful API for catscan documents.
 - In the catFlap directory, run `stack build`
 - Run catFlap server by `stack exec catFlap`
 
-
+## Quick development test
+To quickly test changes without the full build stack:
+- Run `stack ghci`
+- Call `main` in ghci. This will start the API server
 
