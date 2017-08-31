@@ -8,7 +8,7 @@ license-file:        LICENSE
 author:              Wanja Chresta
 maintainer:          brachiel@github.invalid
 copyright:           2017 Wanja Chresta
-category:            Web
+category:            Scanning
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
@@ -32,6 +32,16 @@ executable catFlap
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , Spock
+                     , catFlap
+  default-language:    Haskell2010
+
+executable catConfig
+  hs-source-dirs:      app
+  main-is:             CatConfig.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base >= 4.7
+                     , text
+                     , containers
                      , catFlap
   default-language:    Haskell2010
 

@@ -1,4 +1,5 @@
 *.swp
+bin/
 ocr_scans
 raw_scans
 categories

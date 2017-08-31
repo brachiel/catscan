@@ -13,7 +13,11 @@ in neatly IO wrapped values. Fails miserably in case of parsing errors.
 -}
 
 module Config
-    ( scanCatBasePath
+    ( Config (..)
+    , config
+    , loadConfig
+
+    , scanCatBasePath
     , configFile
     , keywordsFile
     , docExt
