@@ -1,6 +1,6 @@
 {- |
 Module      :  $Header$
-Description :  Parser of scancat config
+Description :  Parser of catscan config
 Copyright   :  (c) brachiel@github
 License     :  All rights reserved.
 
@@ -8,7 +8,7 @@ Maintainer  :  brachiel@github
 Stability   :  unstable
 Portability :  portable
 
-Reads and parses the scancat configuration file and exposes the settings
+Reads and parses the catscan configuration file and exposes the settings
 in neatly IO wrapped values. Fails miserably in case of parsing errors.
 -}
 
@@ -17,7 +17,7 @@ module Config
     , config
     , loadConfig
 
-    , scanCatBasePath
+    , catScanBasePath
     , configFile
     , keywordsFile
     , docExt
@@ -42,22 +42,22 @@ import Control.Monad (sequence)
 
 -- Config
 
--- |'scanCatBasePath' is the base path for all other path based options.
--- It must point to the config.sh file of scancat.
-scanCatBasePath = "../" :: FilePath
+-- |'catScanBasePath' is the base path for all other path based options.
+-- It must point to the config.sh file of catscan.
+catScanBasePath = "../" :: FilePath
 
--- |'configFile' points to the config.sh configuration file of scancat.
-configFile = scanCatBasePath ++ "config.sh" :: FilePath
+-- |'configFile' points to the config.sh configuration file of catscan.
+configFile = catScanBasePath ++ "config.sh" :: FilePath
 
--- |'keywordsFile' points to the keywords file of scancat containing
--- a list of keywords that scancat knows. Its location is read from
+-- |'keywordsFile' points to the keywords file of catscan containing
+-- a list of keywords that catscan knows. Its location is read from
 -- the config file and is thus wrapped in IO
-keywordsFile = (++) scanCatBasePath <$> config # "KEYWORD_FILE" :: IO FilePath
+keywordsFile = (++) catScanBasePath <$> config # "KEYWORD_FILE" :: IO FilePath
 
 -- |The 'docBasePath' points to location of the raw repository, i.e.
 -- to the location where the scanned files and their meta files are.
 -- It is read from the config file and is thus wrapped in IO
-docBasePath = (++) scanCatBasePath <$> config # "DOCUMENT_DIR" :: IO FilePath
+docBasePath = (++) catScanBasePath <$> config # "DOCUMENT_DIR" :: IO FilePath
 
 -- |The 'docExt' is the extension used for documents in 'docBasePath'.
 -- It is read from the config file and is thus wrapped in IO
@@ -70,7 +70,7 @@ catExt = fmap tail $ config # "CAT_EXT" :: IO String
 -- |The 'catBasePath' points to location of the category map files.
 -- Each of the map files contains a list with document names.
 -- It is read from the config file and is thus wrapped in IO
-catBasePath = (++) scanCatBasePath <$> config # "CATEGORY_DIR" :: IO FilePath
+catBasePath = (++) catScanBasePath <$> config # "CATEGORY_DIR" :: IO FilePath
 
 
 data Config = Config (Map.Map Text Text)

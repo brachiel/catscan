@@ -1,5 +1,5 @@
 # catFlap
-RESTful API for scancat documents.
+RESTful API for catscan documents.
 
 ## Building instructions
 - Install [stack](https://www.haskellstack.org/), a cross-platform program for developing Haskell projects.

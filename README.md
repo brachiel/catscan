@@ -1,4 +1,4 @@
-# scancat
+# catscan
 Automatic categorisation of scans
 
 ## TODO
